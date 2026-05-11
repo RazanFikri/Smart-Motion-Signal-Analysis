@@ -9,7 +9,7 @@ This project demonstrates the intersection of **Computer Vision** and **Digital 
 3. **Peak Detection**: Using `scipy.signal.find_peaks` to count distinct movements.
 
 ## Visualization:
-result (2).png
+![Motion Analysis Result](result(2).png)
 
 ## Requirements:
 - OpenCV
