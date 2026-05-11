@@ -1,0 +1,47 @@
+import numpy as np
+import cv2 
+import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
+
+video = cv2.VideoCapture(0)
+ret, frame_prev = video.read()
+toGray_prev = cv2.cvtColor(frame_prev, cv2.COLOR_BGR2GRAY)
+motion_values = []
+while True: 
+ ret, frame_curr = video.read()
+ if not ret:
+    break
+
+ toGray_curr = cv2.cvtColor(frame_curr, cv2.COLOR_BGR2GRAY)
+ frame_diff = cv2.absdiff(toGray_prev, toGray_curr)
+ total_motion_values = np.sum(frame_diff)
+ if total_motion_values > 1000000: 
+    print(f" Motion detected!")
+ motion_values.append(total_motion_values)
+
+ cv2.imshow('Motion only', frame_diff)
+ toGray_prevray_prev = toGray_curr
+ if cv2.waitKey(1) & 0xFF == ord('q'):
+   break
+
+
+motion_array = np.array(motion_values)
+threshold = np.mean(motion_array) - np.std(motion_array) 
+peaks, _ = find_peaks(motion_array, height=threshold, distance=10)
+print(f"Number of detected motions: {len(peaks)}")
+
+
+plt.plot(motion_array, color="red", label="Motion Signal")
+plt.plot(peaks, motion_array[peaks], "x", color="blue", label="Detected Motions")
+plt.title('Motion Values Over Time = '+ str(len(peaks)))
+plt.xlabel('Frame Number')
+plt.ylabel('Motion Value')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+
+video.release()
+cv2.destroyAllWindows() 
+print("Processing Signals amd plotting finished")
+plt.show()    
+    
